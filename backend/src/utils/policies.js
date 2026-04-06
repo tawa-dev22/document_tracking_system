@@ -1,0 +1,18 @@
+export const DOCUMENT_STATUS_TRANSITIONS = {
+  SUBMITTED: ['IN_PROGRESS', 'APPROVED', 'REJECTED'],
+  IN_PROGRESS: ['APPROVED', 'REJECTED', 'RESUBMITTED'],
+  REJECTED: ['RESUBMITTED'],
+  RESUBMITTED: ['IN_PROGRESS', 'APPROVED', 'REJECTED'],
+  APPROVED: []
+};
+
+export const USER_STATUS_TRANSITIONS = {
+  PENDING_VERIFICATION: ['ACTIVE'],
+  ACTIVE: ['LOCKED', 'SUSPENDED'],
+  LOCKED: ['ACTIVE'],
+  SUSPENDED: ['ACTIVE']
+};
+
+export function canTransitionStatus(currentStatus, nextStatus) {
+  return Boolean(DOCUMENT_STATUS_TRANSITIONS[currentStatus]?.includes(nextStatus));
+}
