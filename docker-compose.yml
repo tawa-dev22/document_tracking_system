@@ -1,0 +1,53 @@
+version: '3.9'
+
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - document-tracking-net
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    environment:
+      # Inject Docker networking paths; overrides local .env values
+      - MONGODB_URI=mongodb://mongo:27017/document_tracking_system
+      - TRUST_PROXY=1
+      # CAPTCHA rules, Rate policies, passwords etc. are injected from backend/.env locally 
+      # or should be provided via a production secret manager if deployed online
+    env_file:
+      - ./backend/.env
+    volumes:
+      - document_uploads:/app/uploads
+    networks:
+      - document-tracking-net
+    # Do NOT map 5000:5000 to the host level. It safely hides behind the Nginx network.
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - '80:80'
+    networks:
+      - document-tracking-net
+
+volumes:
+  mongo_data:
+  document_uploads:
+
+networks:
+  document-tracking-net:
+    driver: bridge
