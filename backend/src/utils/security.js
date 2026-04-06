@@ -9,9 +9,6 @@ export function generateOtp(length = 6) {
   return Array.from({ length }, () => crypto.randomInt(0, 10)).join('');
 }
 
-export function generateCsrfToken() {
-  return crypto.randomBytes(32).toString('hex');
-}
 
 export function setRefreshCookie(res, token) {
   res.cookie('refreshToken', token, {
@@ -32,21 +29,3 @@ export function clearRefreshCookie(res) {
   });
 }
 
-export function setCsrfCookie(res, token) {
-  res.cookie(env.csrfCookieName, token, {
-    httpOnly: false, // Accessible by frontend for double-submit
-    sameSite: 'lax',
-    secure: env.cookieSecure,
-    maxAge: 24 * 60 * 60 * 1000,
-    path: '/'
-  });
-}
-
-export function clearCsrfCookie(res) {
-  res.clearCookie(env.csrfCookieName, {
-    httpOnly: false,
-    sameSite: 'lax',
-    secure: env.cookieSecure,
-    path: '/'
-  });
-}

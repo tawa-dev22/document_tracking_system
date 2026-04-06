@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import {
   forgotPassword,
-  getCsrfToken,
   getStatusPolicies,
   listSessions,
   login,
@@ -29,7 +28,6 @@ import {
 
 const router = Router();
 
-router.get('/csrf-token', getCsrfToken);
 router.get('/status-policies', getStatusPolicies);
 
 router.post('/register', registerLimiter, register);

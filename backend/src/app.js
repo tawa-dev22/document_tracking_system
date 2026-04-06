@@ -7,7 +7,6 @@ import rateLimit from 'express-rate-limit';
 import routes from './routes/index.js';
 import { env } from './config/env.js';
 import { errorHandler, notFound } from './middleware/error.middleware.js';
-import { requireCsrf } from './middleware/csrf.middleware.js';
 
 export function createApp() {
   const app = express();
@@ -36,7 +35,6 @@ export function createApp() {
       skip: (req) => req.path === '/api/health' || req.path === '/health'
     })
   );
-  app.use('/api/v1', requireCsrf);
 
   app.get('/api/health', (_req, res) => {
     res.json({

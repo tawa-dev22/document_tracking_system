@@ -51,7 +51,6 @@ export const env = {
   refreshTokenExpiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN || '7d',
   uploadDir: process.env.UPLOAD_DIR || 'uploads',
   cookieSecure: parseBoolean(process.env.COOKIE_SECURE, false),
-  csrfCookieName: process.env.CSRF_COOKIE_NAME || 'csrf_token',
   /** Set when behind nginx / a load balancer so req.ip and rate limits use X-Forwarded-For. */
   trustProxy: parseTrustProxy(),
   /** Requests per window per client IP (raise behind shared NAT, e.g. ministry office). */

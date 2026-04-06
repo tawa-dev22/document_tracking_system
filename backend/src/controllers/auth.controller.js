@@ -6,7 +6,7 @@ import { env } from '../config/env.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { ApiError } from '../utils/ApiError.js';
 import { signAccessToken, signRefreshToken } from '../utils/tokens.js';
-import { clearCsrfCookie, clearRefreshCookie, generateCsrfToken, generateOtp, hashValue, setCsrfCookie, setRefreshCookie } from '../utils/security.js';
+import { clearRefreshCookie, generateOtp, hashValue, setRefreshCookie } from '../utils/security.js';
 import { calculatePasswordStrength } from '../utils/password.js';
 import { createAuditLog } from '../services/audit.service.js';
 import { sendOtpEmail } from '../services/email.service.js';
@@ -83,11 +83,6 @@ async function issueLoginSession(req, res, user) {
   return accessToken;
 }
 
-export const getCsrfToken = asyncHandler(async (_req, res) => {
-  const csrfToken = generateCsrfToken();
-  setCsrfCookie(res, csrfToken);
-  res.json({ success: true, csrfToken });
-});
 
 export const register = asyncHandler(async (req, res) => {
   const data = registerSchema.parse(req.body);
@@ -301,14 +296,12 @@ export const logout = asyncHandler(async (req, res) => {
   }
 
   clearRefreshCookie(res);
-  clearCsrfCookie(res);
   res.json({ success: true, message: 'Logged out successfully' });
 });
 
 export const logoutAllDevices = asyncHandler(async (req, res) => {
   await authService.revokeAllUserSessions(req.user._id, 'LOGOUT_ALL_DEVICES');
   clearRefreshCookie(res);
-  clearCsrfCookie(res);
   res.json({ success: true, message: 'Logged out from all devices successfully' });
 });
 
@@ -432,7 +425,6 @@ export const resetPassword = asyncHandler(async (req, res) => {
   await authService.revokeAllUserSessions(user._id, 'PASSWORD_RESET');
 
   clearRefreshCookie(res);
-  clearCsrfCookie(res);
   await createAuditLog({ actor: user._id, action: 'PASSWORD_RESET_SUCCESS', req });
 
   res.json({

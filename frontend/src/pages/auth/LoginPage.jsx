@@ -10,7 +10,6 @@ import AuthShell from '../../components/common/AuthShell';
 import PasswordInput from '../../components/ui/PasswordInput';
 import SubmitButton from '../../components/ui/SubmitButton';
 import { useAuth } from '../../contexts/AuthContext';
-import { fetchCsrfToken } from '../../services/api';
 
 const schema = z.object({
   email: z.string().trim().email('Enter a valid email address'),
@@ -31,9 +30,6 @@ export default function LoginPage() {
     defaultValues: { email: '', password: '' }
   });
 
-  useEffect(() => {
-    fetchCsrfToken();
-  }, []);
 
   const onSubmit = async (values) => {
     clearErrors('root');

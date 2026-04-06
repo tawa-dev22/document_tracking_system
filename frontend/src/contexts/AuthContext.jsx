@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import api, { clearCsrfToken, fetchCsrfToken, setAccessToken } from '../services/api';
+import api, { setAccessToken } from '../services/api';
 import { connectSocket, disconnectSocket, getSocket } from '../services/socket';
 
 const AuthContext = createContext(null);
@@ -21,7 +21,6 @@ export function AuthProvider({ children }) {
 
   const loadMe = async () => {
     try {
-      await fetchCsrfToken();
       const token = localStorage.getItem('accessToken');
       if (!token) {
         try {
@@ -69,7 +68,6 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (payload) => {
-    await fetchCsrfToken();
     const res = await api.post('/auth/login', payload);
     setAccessToken(res.data.accessToken);
     setUser(res.data.user);
@@ -97,7 +95,6 @@ export function AuthProvider({ children }) {
       // ignore logout errors
     }
     setAccessToken('');
-    clearCsrfToken();
     disconnectSocket();
     setUser(null);
     setNotificationSummary({ unreadCount: 0, types: [] });

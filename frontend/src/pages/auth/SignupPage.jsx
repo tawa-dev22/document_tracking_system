@@ -10,7 +10,7 @@ import AuthShell from '../../components/common/AuthShell';
 import PasswordInput from '../../components/ui/PasswordInput';
 import PasswordStrength from '../../components/ui/PasswordStrength';
 import SubmitButton from '../../components/ui/SubmitButton';
-import api, { fetchCsrfToken } from '../../services/api';
+import api from '../../services/api';
 
 const signupSchema = z.object({
   fullName: z.string().trim().min(3, 'Full name is required').max(120),
@@ -54,9 +54,6 @@ export default function SignupPage() {
     mode: 'onSubmit'
   });
 
-  useEffect(() => {
-    fetchCsrfToken();
-  }, []);
 
   useEffect(() => {
     const urlEmail = searchParams.get('email');

@@ -8,7 +8,6 @@ const api = axios.create({
 
 let accessToken = localStorage.getItem('accessToken') || '';
 let refreshPromise = null;
-let memoryCsrfToken = '';
 
 export function setAccessToken(token) {
   accessToken = token || '';
@@ -16,29 +15,9 @@ export function setAccessToken(token) {
   else localStorage.removeItem('accessToken');
 }
 
-export async function fetchCsrfToken() {
-  const res = await api.get('/auth/csrf-token');
-  memoryCsrfToken = res.data.csrfToken;
-  return memoryCsrfToken;
-}
-
-export function clearCsrfToken() {
-  memoryCsrfToken = '';
-}
-
-function safeDecodeCsrf(token) {
-  if (!token) return '';
-  try {
-    return decodeURIComponent(token);
-  } catch {
-    return token;
-  }
-}
 
 api.interceptors.request.use((config) => {
   if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`;
-  const csrfToken = memoryCsrfToken || getCookie('csrf_token');
-  if (csrfToken) config.headers['X-CSRF-Token'] = safeDecodeCsrf(csrfToken);
   return config;
 });
 
